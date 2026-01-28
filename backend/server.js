@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -14,6 +15,7 @@ const orderRoutes = require('./src/routes/orders');
 const userRoutes = require('./src/routes/users');
 const chatRoutes = require('./src/routes/chat');
 const notificationRoutes = require('./src/routes/notifications');
+const shipperRoutes = require('./src/routes/shipper.routes');
 
 const app = express();
 const server = http.createServer(app);
@@ -56,7 +58,7 @@ const passport = require('./src/config/passport');
 app.use(passport.initialize());
 
 // Static files for uploads
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -66,6 +68,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/shipper', shipperRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -10,7 +10,7 @@ export interface User {
     ward?: string;
   };
   avatar?: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'shipper';
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -96,6 +96,12 @@ export interface Order {
   status: 'pending' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled';
   note?: string;
   shippingFee: number;
+  shipper?: {
+    _id: string;
+    name: string;
+    phone: string;
+  };
+  deliveryImage?: string;
   createdAt: string;
   updatedAt: string;
 }

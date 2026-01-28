@@ -50,6 +50,7 @@ import { User } from '../../../core/models';
                 <select [(ngModel)]="newUser.role" name="role" class="input">
                   <option value="user">Người dùng</option>
                   <option value="admin">Quản trị viên (Admin)</option>
+                  <option value="shipper">Nhân viên giao hàng (Shipper)</option>
                 </select>
               </div>
               <div class="flex justify-end gap-3 mt-6">
@@ -93,8 +94,12 @@ import { User } from '../../../core/models';
                   <td class="px-6 py-4 text-sm text-slate-600">{{ user.email }}</td>
                   <td class="px-6 py-4 text-sm text-slate-600">{{ user.phone || '-' }}</td>
                   <td class="px-6 py-4">
-                    <span [class]="user.role === 'admin' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-slate-100 text-slate-700 border-slate-200'" class="px-2.5 py-1 rounded-full text-xs font-medium border">
-                      {{ user.role === 'admin' ? 'Admin' : 'User' }}
+                    <span [ngClass]="{
+                      'bg-purple-50 text-purple-700 border-purple-200': user.role === 'admin',
+                      'bg-orange-50 text-orange-700 border-orange-200': user.role === 'shipper',
+                      'bg-slate-100 text-slate-700 border-slate-200': user.role === 'user'
+                    }" class="px-2.5 py-1 rounded-full text-xs font-medium border">
+                      {{ user.role === 'admin' ? 'Admin' : (user.role === 'shipper' ? 'Shipper' : 'User') }}
                     </span>
                   </td>
                   <td class="px-6 py-4">

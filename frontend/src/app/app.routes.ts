@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard, AdminGuard, GuestGuard } from './core/guards/auth.guard';
+import { ShipperGuard } from './core/guards/shipper.guard';
 
 export const routes: Routes = [
   {
@@ -86,6 +87,21 @@ export const routes: Routes = [
       {
         path: 'chat',
         loadComponent: () => import('./features/admin/admin-chat/admin-chat.component').then(m => m.AdminChatComponent)
+      }
+    ]
+  },
+  {
+    path: 'shipper',
+    canActivate: [ShipperGuard],
+    loadComponent: () => import('./features/shipper/shipper-layout/shipper-layout.component').then(m => m.ShipperLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/shipper/shipper-dashboard/shipper-dashboard.component').then(m => m.ShipperDashboardComponent)
+      },
+      {
+        path: 'orders/:id',
+        loadComponent: () => import('./features/shipper/shipper-order-detail/shipper-order-detail.component').then(m => m.ShipperOrderDetailComponent)
       }
     ]
   },

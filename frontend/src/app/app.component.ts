@@ -176,6 +176,11 @@ import { ChatWidgetComponent } from './features/chat/chat-widget/chat-widget.com
                         ⚡ Quản trị hệ thống
                       </a>
                     }
+                    @if (user.role === 'shipper') {
+                      <a routerLink="/shipper" class="block px-4 py-2.5 text-sm text-indigo-600 hover:bg-indigo-50 font-bold" (click)="showUserMenu = false">
+                        🚚 Kênh Đối Tác Giao Hàng
+                      </a>
+                    }
                     <div class="border-t border-gray-100 mt-1 pt-1">
                       <button (click)="logout()" class="block w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 font-medium">
                         🚪 Đăng xuất

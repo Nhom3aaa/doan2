@@ -116,6 +116,10 @@ export class AuthService {
     return this.currentUserSubject.value?.role === 'admin';
   }
 
+  get isShipper(): boolean {
+    return this.currentUserSubject.value?.role === 'shipper';
+  }
+
   get currentUser(): User | null {
     return this.currentUserSubject.value;
   }

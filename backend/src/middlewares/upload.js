@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Tạo thư mục uploads nếu chưa có
-const uploadDir = 'uploads/products';
+const uploadDir = path.join(__dirname, '../../uploads/products');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }

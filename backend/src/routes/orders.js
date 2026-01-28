@@ -268,6 +268,7 @@ router.get('/admin/all', auth, adminAuth, async (req, res) => {
     const total = await Order.countDocuments(query);
     const orders = await Order.find(query)
       .populate('user', 'name email phone')
+      .populate('shipper', 'name phone')
       .sort('-createdAt')
       .skip((page - 1) * limit)
       .limit(Number(limit));

@@ -73,6 +73,24 @@ const adminAuth = async (req, res, next) => {
   }
 };
 
+// Middleware kiểm tra quyền shipper
+const shipperAuth = async (req, res, next) => {
+  try {
+    if (req.user.role !== 'shipper' && req.user.role !== 'admin') {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Bạn không có quyền truy cập chức năng này' 
+      });
+    }
+    next();
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: 'Lỗi phân quyền' 
+    });
+  }
+};
+
 // Middleware tùy chọn - không bắt buộc đăng nhập
 const optionalAuth = async (req, res, next) => {
   try {
@@ -93,4 +111,4 @@ const optionalAuth = async (req, res, next) => {
   }
 };
 
-module.exports = { auth, adminAuth, optionalAuth };
+module.exports = { auth, adminAuth, optionalAuth, shipperAuth };

@@ -61,6 +61,13 @@ const orderSchema = new mongoose.Schema({
   shippingFee: {
     type: Number,
     default: 0
+  },
+  shipper: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  deliveryImage: {
+    type: String
   }
 }, {
   timestamps: true

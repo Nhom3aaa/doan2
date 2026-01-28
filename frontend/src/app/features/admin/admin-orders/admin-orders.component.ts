@@ -43,6 +43,7 @@ import { environment } from '../../../../environments/environment';
                 <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Khách hàng</th>
                 <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Sản phẩm</th>
                 <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Tổng tiền</th>
+                <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Shipper</th>
                 <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Trạng thái</th>
                 <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Ngày đặt</th>
                 <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Thao tác</th>
@@ -69,6 +70,14 @@ import { environment } from '../../../../environments/environment';
                     </div>
                   </td>
                   <td class="px-6 py-4 font-bold text-slate-700">{{ formatPrice(order.totalAmount) }}</td>
+                  <td class="px-6 py-4 text-sm">
+                    @if (order.shipper) {
+                      <div class="font-medium text-orange-600">{{ order.shipper.name }}</div>
+                      <div class="text-xs text-gray-500">{{ order.shipper.phone }}</div>
+                    } @else {
+                      <span class="text-gray-400 italic">--</span>
+                    }
+                  </td>
                   <td class="px-6 py-4">
                     <div class="relative">
                       <select 
@@ -193,6 +202,23 @@ import { environment } from '../../../../environments/environment';
 
                 @if (selectedOrder.note) {
                   <p class="text-gray-600 mt-2">Ghi chú: {{ selectedOrder.note }}</p>
+                }
+
+                <!-- Delivery Evidence -->
+                @if (selectedOrder.deliveryImage) {
+                  <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p class="font-bold text-sm mb-2 text-green-800">📸 Bằng chứng giao hàng:</p>
+                    @if (isVideo(selectedOrder.deliveryImage)) {
+                       <video [src]="getImageUrl(selectedOrder.deliveryImage)" controls class="w-full h-auto max-h-64 rounded border bg-black"></video>
+                    } @else {
+                       <a [href]="getImageUrl(selectedOrder.deliveryImage)" target="_blank" class="block relative group overflow-hidden rounded border border-green-200">
+                          <img [src]="getImageUrl(selectedOrder.deliveryImage)" class="w-full h-auto max-h-48 object-contain bg-white">
+                          <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs">
+                             🔍 Bấm để xem ảnh lớn
+                          </div>
+                      </a>
+                    }
+                  </div>
                 }
               </div>
             </div>
@@ -319,6 +345,12 @@ export class AdminOrdersComponent implements OnInit {
     // Remove /api from apiUrl to get base URL (http://localhost:5001)
     const baseUrl = environment.apiUrl.replace('/api', '');
     return baseUrl + path;
+  }
+
+  isVideo(path: string): boolean {
+    if (!path) return false;
+    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov'];
+    return videoExtensions.some(ext => path.toLowerCase().endsWith(ext));
   }
 
   printInvoice() {

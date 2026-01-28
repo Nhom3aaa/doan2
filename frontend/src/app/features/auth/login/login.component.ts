@@ -128,8 +128,15 @@ export class LoginComponent {
 
     this.authService.login(this.email, this.password).subscribe({
       next: (res) => {
-        if (res.success) {
-          this.router.navigate(['/']);
+        if (res.success && res.data) {
+          const user = res.data.user;
+          if (user.role === 'admin') {
+            this.router.navigate(['/admin']);
+          } else if (user.role === 'shipper') {
+            this.router.navigate(['/shipper']);
+          } else {
+            this.router.navigate(['/']);
+          }
         } else {
           this.error = res.message || 'Đăng nhập thất bại';
         }
