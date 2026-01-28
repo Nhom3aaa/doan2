@@ -1,4 +1,3 @@
-# Phone Store Website
 
 Dự án website bán điện thoại đầy đủ chức năng với **Frontend Angular** và **Backend Node.js/Express**. Hệ thống hỗ trợ 3 vai trò người dùng: **Khách hàng**, **Admin**, và **Shipper**.
 

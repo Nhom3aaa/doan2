@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: phone-store-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - phone-store-network
+
+  backend:
+    build: ./backend
+    container_name: phone-store-backend
+    restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/phone-store
+      - JWT_SECRET=docker_secret_key
+      # Add other keys from .env here if needed
+    depends_on:
+      - mongo
+    networks:
+      - phone-store-network
+
+  frontend:
+    build: ./frontend
+    container_name: phone-store-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - phone-store-network
+
+networks:
+  phone-store-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
