@@ -1,6 +1,10 @@
 # Phone Store Website
 
+<<<<<<< HEAD
 Dự án website bán điện thoại đầy đủ chức năng với **Frontend Angular** và **Backend Node.js/Express**. Hệ thống hỗ trợ 3 vai trò người dùng: **Khách hàng**, **Admin**, và **Shipper**.
+=======
+Dự án website bán điện thoại đầy đủ chức năng với Frontend Angular và Backend Node.js/Express.
+>>>>>>> 81f4f5e255a94ee797685ee042923ae864d46109
 
 ## 🚀 Yêu cầu hệ thống
 
@@ -22,7 +26,11 @@ npm install
 ```
 
 **Cấu hình môi trường (.env):**
+<<<<<<< HEAD
 Tạo file `.env` trong thư mục `backend` với nội dung sau:
+=======
+Tạo file `.env` trong thư mục `backend` với nội dung sau (điền các key của bạn):
+>>>>>>> 81f4f5e255a94ee797685ee042923ae864d46109
 
 ```env
 # Server Configuration
@@ -33,6 +41,7 @@ NODE_ENV=development
 MONGODB_URI=mongodb://localhost:27017/phone-store
 
 # Security
+<<<<<<< HEAD
 JWT_SECRET=your_jwt_secret_key
 
 # Social Auth (Optional)
@@ -41,6 +50,18 @@ GOOGLE_CLIENT_SECRET=your_secret
 
 # AI Features (Optional)
 GROQ_API_KEY=your_key
+=======
+JWT_SECRET=your_secret_key_here
+
+# Social Auth (Optional)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+FACEBOOK_APP_ID=your_facebook_app_id
+FACEBOOK_APP_SECRET=your_facebook_app_secret
+
+# AI Features (Optional)
+GROQ_API_KEY=your_groq_api_key
+>>>>>>> 81f4f5e255a94ee797685ee042923ae864d46109
 ```
 
 **Chạy server:**
@@ -48,9 +69,18 @@ GROQ_API_KEY=your_key
 ```bash
 # Chạy với nodemon (dev mode)
 npm run dev
+<<<<<<< HEAD
 ```
 
 Backend sẽ chạy tại: `http://localhost:5001`
+=======
+
+# Hoặc chạy thông thường
+npm start
+```
+
+Backend sẽ chạy tại: `http://localhost:5001` (mặc định)
+>>>>>>> 81f4f5e255a94ee797685ee042923ae864d46109
 
 ### 2. Frontend (Angular App)
 
@@ -65,7 +95,12 @@ npm install
 
 ```bash
 npm start
+<<<<<<< HEAD
 # Hoặc: ng serve
+=======
+# Hoặc
+ng serve
+>>>>>>> 81f4f5e255a94ee797685ee042923ae864d46109
 ```
 
 Frontend sẽ chạy tại: `http://localhost:4200`
@@ -74,6 +109,7 @@ Frontend sẽ chạy tại: `http://localhost:4200`
 
 ### Frontend
 
+<<<<<<< HEAD
 - **Angular 17**: Framework chính (Standalone Components).
 - **Tailwind CSS**: Styling framework hiện đại.
 - **Socket.io-client**: Real-time chat & notifications.
@@ -116,3 +152,33 @@ Frontend sẽ chạy tại: `http://localhost:4200`
 ## 🤝 Đóng góp
 
 Dự án được phát triển bởi nhóm 3. Mọi đóng góp xin gửi Pull Request hoặc tạo Issue.
+=======
+- **Angular 17**: Framework chính.
+- **Tailwind CSS**: Styling framework.
+- **Socket.io-client**: Real-time chat & notifications.
+- **Chart.js / ng2-charts**: Biểu đồ thống kê.
+
+### Backend
+
+- **Node.js & Express**: API Framework.
+- **MongoDB & Mongoose**: Cơ sở dữ liệu.
+- **Socket.io**: Xử lý thời gian thực.
+- **Passport.js**: Xác thực người dùng (Google, Facebook).
+- **JWT**: Bảo mật API.
+- **Groq SDK**: Tích hợp AI.
+
+## ✨ Tính năng chính
+
+- **Người dùng**:
+  - Đăng ký, Đăng nhập (Local, Google, Facebook).
+  - Tìm kiếm, xem chi tiết sản phẩm.
+  - Giỏ hàng, Đặt hàng, Thanh toán.
+  - Lịch sử đơn hàng.
+  - Chat trực tiếp với Admin.
+- **Admin**:
+  - Quản lý sản phẩm, danh mục.
+  - Quản lý đơn hàng, trạng thái đơn.
+  - Quản lý người dùng.
+  - Dashboard thống kê doanh thu.
+  - Chat hỗ trợ khách hàng.
+>>>>>>> 81f4f5e255a94ee797685ee042923ae864d46109
