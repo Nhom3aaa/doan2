@@ -3,7 +3,7 @@ version: '3.8'
 services:
   mongo:
     image: mongo:latest
-    container_name: phone-store-mongo
+    # container_name removed
     ports:
       - "27017:27017"
     volumes:
@@ -13,16 +13,15 @@ services:
 
   backend:
     build: ./backend
-    container_name: phone-store-backend
+    # container_name removed to avoid conflict
     restart: always
     ports:
       - "5001:5001"
+    env_file:
+      - ./backend/.env
     environment:
-      - PORT=5001
-      - NODE_ENV=production
       - MONGODB_URI=mongodb://mongo:27017/phone-store
-      - JWT_SECRET=docker_secret_key
-      # Add other keys from .env here if needed
+      # Overrides or additional variables not in .env
     depends_on:
       - mongo
     networks:
@@ -30,7 +29,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: phone-store-frontend
+    # container_name removed
     restart: always
     ports:
       - "80:80"
