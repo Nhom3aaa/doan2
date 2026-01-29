@@ -337,10 +337,12 @@ export class ProductListComponent implements OnInit {
     const normalizedPath = path.replace(/\\/g, '/');
     const baseUrl = environment.apiUrl.replace('/api', '');
     
-    // Ensure slash separation
-    return normalizedPath.startsWith('/') 
+    const finalUrl = normalizedPath.startsWith('/') 
       ? `${baseUrl}${normalizedPath}`
       : `${baseUrl}/${normalizedPath}`;
+      
+    console.log('🖼️ Image URL:', { original: path, final: finalUrl });
+    return finalUrl;
   }
 
   onImageError(event: Event) {

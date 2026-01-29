@@ -61,7 +61,10 @@ const passport = require('./src/config/passport');
 app.use(passport.initialize());
 
 // Static files for uploads
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', (req, res, next) => {
+  console.log('📸 Requesting image:', req.url);
+  next();
+}, express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes);
