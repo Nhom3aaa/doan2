@@ -1294,14 +1294,65 @@ const seedData = async () => {
       }
     });
 
+    // --- PHẦN TỰ ĐỘNG THÊM SẢN PHẨM TỪ ẢNH LOCAL (Uploads) ---
+    // Giúp hiển thị các ảnh đã upload trong folder uploads/products
+    const fs = require('fs');
+    const path = require('path');
+    const uploadDir = path.join(__dirname, 'uploads/products');
+
+    if (fs.existsSync(uploadDir)) {
+      const files = fs.readdirSync(uploadDir).filter(f => !f.startsWith('.'));
+      
+      if (files.length > 0) {
+        console.log(`\n� Tìm thấy ${files.length} ảnh trong máy. Đang tạo sản phẩm tương ứng...`);
+        
+        // Tạo sản phẩm bổ sung từ ảnh
+        const extraProducts = [];
+        
+        // Nhóm ảnh: Cứ 2-3 ảnh tạo thành 1 sản phẩm để đỡ rối
+        let fileIdx = 0;
+        let productIdx = 1;
+
+        while (fileIdx < files.length) {
+          const numImagesForThisProduct = Math.floor(Math.random() * 3) + 1; // 1-3 ảnh/sp
+          const productImages = [];
+          
+          for (let k = 0; k < numImagesForThisProduct && fileIdx < files.length; k++) {
+             productImages.push(`/uploads/products/${files[fileIdx]}`);
+             fileIdx++;
+          }
+
+          if (productImages.length > 0) {
+             extraProducts.push({
+                name: `Sản phẩm nhập kho #${productIdx} (Mới)`,
+                brand: 'New Import',
+                price: 5000000 + (productIdx * 100000), // Giá giả định
+                description: 'Sản phẩm mới nhập về kho, chưa cập nhật chi tiết.',
+                specs: { screen: 'To và đẹp', cpu: 'Mạnh mẽ', ram: '8GB', storage: '256GB' },
+                images: productImages,
+                thumbnail: productImages[0],
+                stock: 10,
+                category: 'Phone',
+                isFeatured: false,
+                colors: ['Mặc định']
+             });
+             productIdx++;
+          }
+        }
+
+        // Gộp sản phẩm cũ và mới
+        if (extraProducts.length > 0) {
+           products.push(...extraProducts);
+           console.log(`➕ Đã thêm ${extraProducts.length} sản phẩm mới từ kho ảnh.`);
+        }
+      }
+    }
+    // -------------------------------------------------------------
+
     await Product.insertMany(products);
-    console.log(`📱 Created ${products.length} products`);
+    console.log(`📱 Tổng cộng: ${products.length} sản phẩm đã được tạo.`);
 
     console.log('\n✅ Seed completed!');
-    console.log('\n📋 Login credentials:');
-    console.log('   Admin: admin@phoneshop.com / admin123');
-    console.log('   User:  user@example.com / user123');
-
     process.exit(0);
   } catch (error) {
     console.error('❌ Seed error:', error);
