@@ -45,8 +45,11 @@ connectDB();
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin) return callback(null, true);
-    if (origin.startsWith('http://localhost:')) return callback(null, true);
-    callback(new Error('Not allowed by CORS'));
+    // Allow localhost and any other origin for now during debugging
+    return callback(null, true);
+    // if (origin.startsWith('http://localhost:')) return callback(null, true);
+    // console.log('Blocked CORS origin:', origin);
+    // callback(new Error('Not allowed by CORS'));
   },
   credentials: true
 }));

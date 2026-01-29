@@ -3,34 +3,35 @@ version: '3.8'
 services:
   mongo:
     image: mongo:latest
-    # container_name removed
+    container_name: phone-store-mongo
     ports:
       - "27017:27017"
     volumes:
-      - mongo-data:/data/db
+      - mongo_data:/data/db
     networks:
       - phone-store-network
 
   backend:
     build: ./backend
-    # container_name removed to avoid conflict
-    restart: always
+    container_name: phone-store-backend
     ports:
       - "5001:5001"
     env_file:
       - ./backend/.env
     environment:
+      - PORT=5001
       - MONGODB_URI=mongodb://mongo:27017/phone-store
-      # Overrides or additional variables not in .env
     depends_on:
       - mongo
     networks:
       - phone-store-network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
 
   frontend:
     build: ./frontend
-    # container_name removed
-    restart: always
+    container_name: phone-store-frontend
     ports:
       - "80:80"
     depends_on:
@@ -43,4 +44,4 @@ networks:
     driver: bridge
 
 volumes:
-  mongo-data:
+  mongo_data:
