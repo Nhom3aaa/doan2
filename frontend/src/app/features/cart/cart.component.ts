@@ -140,7 +140,15 @@ export class CartComponent implements OnInit {
   getImageUrl(path: string): string {
     if (!path) return 'https://via.placeholder.com/100x100?text=Phone';
     if (path.startsWith('http')) return path;
-    return environment.apiUrl.replace('/api', '') + path;
+    
+    // Normalize path (handle Windows backslash)
+    const normalizedPath = path.replace(/\\/g, '/');
+    const baseUrl = environment.apiUrl.replace('/api', '');
+    
+    // Ensure slash separation
+    return normalizedPath.startsWith('/') 
+      ? `${baseUrl}${normalizedPath}`
+      : `${baseUrl}/${normalizedPath}`;
   }
 
   onImageError(event: Event) {
