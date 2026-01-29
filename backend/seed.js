@@ -1294,8 +1294,8 @@ const seedData = async () => {
       }
     });
 
-    // --- PHẦN TỰ ĐỘNG THÊM SẢN PHẨM TỪ ẢNH LOCAL (Uploads) ---
-    // Giúp hiển thị các ảnh đã upload trong folder uploads/products
+    // --- PHẦN TỰ ĐỘNG CẬP NHẬT ẢNH LOCAL CHO SẢN PHẨM ---
+    // Thay thế ảnh online bằng ảnh có sẵn trong uploads/products
     const fs = require('fs');
     const path = require('path');
     const uploadDir = path.join(__dirname, 'uploads/products');
@@ -1304,47 +1304,32 @@ const seedData = async () => {
       const files = fs.readdirSync(uploadDir).filter(f => !f.startsWith('.'));
       
       if (files.length > 0) {
-        console.log(`\n� Tìm thấy ${files.length} ảnh trong máy. Đang tạo sản phẩm tương ứng...`);
+        console.log(`\n📂 Tìm thấy ${files.length} ảnh trong máy. Đang cập nhật vào danh sách sản phẩm...`);
         
-        // Tạo sản phẩm bổ sung từ ảnh
-        const extraProducts = [];
-        
-        // Nhóm ảnh: Cứ 2-3 ảnh tạo thành 1 sản phẩm để đỡ rối
         let fileIdx = 0;
-        let productIdx = 1;
+        
+        // Duyệt qua từng sản phẩm gốc và gán ảnh local
+        for (let i = 0; i < products.length; i++) {
+            const currentImages = [];
+            // Mỗi sản phẩm lấy ngẫu nhiên 2-3 ảnh
+            const numImages = Math.floor(Math.random() * 2) + 2; 
 
-        while (fileIdx < files.length) {
-          const numImagesForThisProduct = Math.floor(Math.random() * 3) + 1; // 1-3 ảnh/sp
-          const productImages = [];
-          
-          for (let k = 0; k < numImagesForThisProduct && fileIdx < files.length; k++) {
-             productImages.push(`/uploads/products/${files[fileIdx]}`);
-             fileIdx++;
-          }
+            for (let j = 0; j < numImages; j++) {
+                if (fileIdx < files.length) {
+                    currentImages.push(`/uploads/products/${files[fileIdx]}`);
+                    fileIdx++;
+                } else {
+                    // Nếu hết ảnh thì quay lại từ đầu (để đảm bảo ko bị thiếu)
+                    fileIdx = 0;
+                    currentImages.push(`/uploads/products/${files[fileIdx]}`);
+                    fileIdx++;
+                }
+            }
 
-          if (productImages.length > 0) {
-             extraProducts.push({
-                name: `Sản phẩm nhập kho #${productIdx} (Mới)`,
-                brand: 'New Import',
-                price: 5000000 + (productIdx * 100000), // Giá giả định
-                description: 'Sản phẩm mới nhập về kho, chưa cập nhật chi tiết.',
-                specs: { screen: 'To và đẹp', cpu: 'Mạnh mẽ', ram: '8GB', storage: '256GB' },
-                images: productImages,
-                thumbnail: productImages[0],
-                stock: 10,
-                category: 'Phone',
-                isFeatured: false,
-                colors: ['Mặc định']
-             });
-             productIdx++;
-          }
+            products[i].images = currentImages;
+            products[i].thumbnail = currentImages[0];
         }
-
-        // Gộp sản phẩm cũ và mới
-        if (extraProducts.length > 0) {
-           products.push(...extraProducts);
-           console.log(`➕ Đã thêm ${extraProducts.length} sản phẩm mới từ kho ảnh.`);
-        }
+        console.log(`✅ Đã gán ảnh local cho ${products.length} sản phẩm.`);
       }
     }
     // -------------------------------------------------------------
