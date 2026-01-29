@@ -1,4 +1,3 @@
-
 Dự án website bán điện thoại đầy đủ chức năng với **Frontend Angular** và **Backend Node.js/Express**. Hệ thống hỗ trợ 3 vai trò người dùng: **Khách hàng**, **Admin**, và **Shipper**.
 
 ## 🚀 Yêu cầu hệ thống
@@ -22,7 +21,7 @@ npm install
 ```
 
 **Cấu hình môi trường (.env):**
-Tạo file `.env` trong thư mục `backend`:
+Bạn có thể copy từ file mẫu: `cp .env.example .env` hoặc tạo mới file `.env` trong thư mục `backend`:
 
 ```env
 # Server Configuration
