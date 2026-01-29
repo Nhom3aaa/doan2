@@ -62,6 +62,16 @@ Sau khi lệnh trên chạy xong (có thể mất vài phút ở lần đầu đ
 - **API (Backend):** [http://localhost:5001](http://localhost:5001)
 - **Database:** `mongodb://localhost:27017`
 
+### 🔹 Lưu ý về Dữ liệu (Sản phẩm)
+
+Lần đầu chạy, hệ thống sẽ tự động quét ảnh và tạo sản phẩm.
+
+- Nếu vào trang web thấy trắng trơn, bạn hãy chạy lệnh sau để nạp dữ liệu:
+  ```powershell
+  docker-compose exec backend npm run seed
+  ```
+- Sau đó tải lại trang web (F5).
+
 ## 6. Các lệnh thường dùng khác
 
 **Xem log (để kiểm tra xem server có lỗi gì không):**
