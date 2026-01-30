@@ -72,7 +72,20 @@ Lần đầu chạy, hệ thống sẽ tự động quét ảnh và tạo sản 
   ```
 - Sau đó tải lại trang web (F5).
 
-## 6. Các lệnh thường dùng khác
+## 6. Lưu dữ liệu (Quan trọng)
+
+Khi bạn thêm sản phẩm mới hoặc upload ảnh trên trang web, các ảnh đó đang nằm ở máy tính hiện tại.
+Để mang các ảnh mới này sang máy khác, bạn cần "Lưu" chúng lên GitHub.
+
+Mình đã tạo file **`save_data.bat`**.
+Mỗi khi làm việc xong, hãy click đúp vào file này. Nó sẽ:
+
+1.  Tự tìm các ảnh mới bạn vừa up.
+2.  Lưu code và ảnh lên GitHub.
+
+--> Sang máy mới, chỉ cần tải lại (git pull) là có đủ tất cả.
+
+## 7. Các lệnh thường dùng khác
 
 **Xem log (để kiểm tra xem server có lỗi gì không):**
 
@@ -88,13 +101,13 @@ _(Nhấn Ctrl + C để thoát xem log)_
 docker-compose down
 ```
 
-**Cập nhật code mới nhất từ GitHub:**
+**Cập nhật code mới nhất từ GitHub (Khi qua máy khác):**
 
 ```powershell
 # 1. Tắt server đang chạy
 docker-compose down
 
-# 2. Tải code mới
+# 2. Tải code mới (bao gồm cả ảnh mới user khác vừa up)
 git pull origin main
 
 # 3. Chạy lại
