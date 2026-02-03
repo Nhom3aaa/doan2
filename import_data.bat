@@ -11,19 +11,19 @@ if not exist "backend\backup_data\products.json" (
 )
 
 echo.
-echo [2/2] Dang nap du lieu vao MongoDB...
+echo [2/2] Dang nap du lieu vao MongoDB (Qua duong ong dan)...
 
 echo   - Dang nhap Products...
-docker-compose exec -T mongo mongoimport --db phone-store --collection products --file /app/backup_data/products.json --jsonArray --drop
+type backend\backup_data\products.json | docker-compose exec -T mongo mongoimport --db phone-store --collection products --jsonArray --drop
 
 echo   - Dang nhap Users...
-docker-compose exec -T mongo mongoimport --db phone-store --collection users --file /app/backup_data/users.json --jsonArray --drop
+type backend\backup_data\users.json | docker-compose exec -T mongo mongoimport --db phone-store --collection users --jsonArray --drop
 
 echo   - Dang nhap Orders...
-docker-compose exec -T mongo mongoimport --db phone-store --collection orders --file /app/backup_data/orders.json --jsonArray --drop
+type backend\backup_data\orders.json | docker-compose exec -T mongo mongoimport --db phone-store --collection orders --jsonArray --drop
 
 echo   - Dang nhap Carts...
-docker-compose exec -T mongo mongoimport --db phone-store --collection carts --file /app/backup_data/carts.json --jsonArray --drop
+type backend\backup_data\carts.json | docker-compose exec -T mongo mongoimport --db phone-store --collection carts --jsonArray --drop
 
 echo.
 echo ===================================================
