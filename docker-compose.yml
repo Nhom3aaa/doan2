@@ -7,7 +7,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongo_data:/data/db
+      - ./database_data:/data/db
     networks:
       - phone-store-network
 
@@ -43,5 +43,5 @@ networks:
   phone-store-network:
     driver: bridge
 
-volumes:
-  mongo_data:
+# Deleted 'volumes: mongo_data:' section as it is no longer needed
+
