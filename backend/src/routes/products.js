@@ -2,6 +2,7 @@ const express = require('express');
 const Product = require('../models/Product');
 const { auth, adminAuth } = require('../middlewares/auth');
 const upload = require('../middlewares/upload');
+const { getCache, setCache, clearCache } = require('../config/redis');
 
 const router = express.Router();
 
@@ -34,7 +35,6 @@ router.get('/', async (req, res) => {
     }
 
     // Tìm kiếm
-    // Tìm kiếm
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
@@ -48,23 +48,41 @@ router.get('/', async (req, res) => {
       query.isFeatured = true;
     }
 
+    // Redis Cache Key
+    const cacheKey = `products:list:${JSON.stringify(req.query)}`;
+    
+    // Check Cache
+    const cachedData = await getCache(cacheKey);
+    if (cachedData) {
+      return res.json({
+        success: true,
+        data: cachedData,
+        source: 'cache'
+      });
+    }
+
     const total = await Product.countDocuments(query);
     const products = await Product.find(query)
       .sort(sort)
       .skip((page - 1) * limit)
       .limit(Number(limit));
 
+    const result = {
+      products,
+      pagination: {
+        current: Number(page),
+        pages: Math.ceil(total / limit),
+        total,
+        limit: Number(limit)
+      }
+    };
+
+    // Save to Cache (1 hour)
+    await setCache(cacheKey, result, 3600);
+
     res.json({
       success: true,
-      data: {
-        products,
-        pagination: {
-          current: Number(page),
-          pages: Math.ceil(total / limit),
-          total,
-          limit: Number(limit)
-        }
-      }
+      data: result
     });
   } catch (error) {
     res.status(500).json({
@@ -250,6 +268,9 @@ router.post('/', auth, adminAuth, async (req, res) => {
     const product = new Product(req.body);
     await product.save();
 
+    // Clear Cache
+    await clearCache('products:list:*');
+
     res.status(201).json({
       success: true,
       message: 'Thêm sản phẩm thành công',
@@ -306,6 +327,10 @@ router.put('/:id', auth, adminAuth, async (req, res) => {
       });
     }
 
+    // Clear Cache
+    await clearCache('products:list:*');
+    await clearCache(`products:detail:${req.params.id}`);
+
     res.json({
       success: true,
       message: 'Cập nhật sản phẩm thành công',
@@ -331,6 +356,10 @@ router.delete('/:id', auth, adminAuth, async (req, res) => {
         message: 'Không tìm thấy sản phẩm'
       });
     }
+
+    // Clear Cache
+    await clearCache('products:list:*');
+    await clearCache(`products:detail:${req.params.id}`);
 
     res.json({
       success: true,

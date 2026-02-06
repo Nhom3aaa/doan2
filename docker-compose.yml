@@ -11,8 +11,18 @@ services:
     networks:
       - phone-store-network
 
+  redis:
+    image: redis:alpine
+    container_name: phone-store-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - phone-store-network
+    restart: always
+
   backend:
     build: ./backend
+    restart: always
     container_name: phone-store-backend
     ports:
       - "5001:5001"
@@ -21,6 +31,7 @@ services:
     environment:
       - PORT=5001
       - MONGODB_URI=mongodb://mongo:27017/phone-store
+      - REDIS_URL=redis://redis:6379
     depends_on:
       - mongo
     networks:
@@ -31,6 +42,7 @@ services:
 
   frontend:
     build: ./frontend
+    restart: always
     container_name: phone-store-frontend
     ports:
       - "80:80"

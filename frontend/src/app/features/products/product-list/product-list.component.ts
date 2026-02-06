@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models';
 import { environment } from '../../../../environments/environment';
+import { staggerAnimation } from '../../../core/animations/route.animations';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, NgOptimizedImage],
+  animations: [staggerAnimation],
   template: `
     <div class="max-w-7xl mx-auto px-4 py-8">
       <div class="flex flex-col md:flex-row gap-8">
@@ -151,14 +153,15 @@ import { environment } from '../../../../environments/environment';
               <p class="text-gray-600">Không tìm thấy sản phẩm nào</p>
             </div>
           } @else {
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6" [@staggerAnimation]="products.length">
               @for (product of products; track product._id) {
                 <a [routerLink]="['/products', product._id]" class="card overflow-hidden group">
                   <div class="aspect-square bg-gray-100 relative overflow-hidden">
                     <img 
-                      [src]="getImageUrl(product.thumbnail || product.images[0])" 
+                      [ngSrc]="getImageUrl(product.thumbnail || product.images[0])" 
+                      fill
                       [alt]="product.name"
-                      class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform"
+                      class="object-contain p-4 group-hover:scale-105 transition-transform"
                       (error)="onImageError($event)"
                     >
                     @if (product.originalPrice && product.originalPrice > product.price) {

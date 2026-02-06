@@ -4,6 +4,8 @@ const path = require('path');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
+const compression = require('compression');
+const helmet = require('helmet');
 const connectDB = require('./src/config/db');
 const setupSocket = require('./src/socket');
 
@@ -40,6 +42,9 @@ app.set('io', io);
 
 // Connect to MongoDB
 connectDB();
+// Connect to Redis
+const { connectRedis } = require('./src/config/redis');
+connectRedis();
 
 // Middleware
 app.use(cors({
@@ -55,6 +60,12 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Security & Optimization
+app.use(compression());
+app.use(helmet({
+  crossOriginResourcePolicy: false, // Cho phép load ảnh từ thư mục static
+}));
 
 // Passport middleware
 const passport = require('./src/config/passport');

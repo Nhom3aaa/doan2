@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
 import { CartService } from './core/services/cart.service';
 import { NotificationService } from './core/services/notification.service';
@@ -10,19 +10,26 @@ import { FormsModule } from '@angular/forms';
 import { environment } from '../environments/environment';
 
 import { ChatWidgetComponent } from './features/chat/chat-widget/chat-widget.component';
+import { fadeAnimation } from './core/animations/route.animations';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, FormsModule, ChatWidgetComponent],
+  imports: [CommonModule, RouterOutlet, RouterLink, FormsModule, ChatWidgetComponent, NgOptimizedImage],
+  animations: [fadeAnimation],
   template: `
     <!-- Header -->
     <header class="glass sticky top-0 z-50 transition-all duration-300">
       <div class="max-w-7xl mx-auto px-4">
         <div class="flex items-center justify-between h-20 gap-8">
-          <a routerLink="/" class="flex items-center space-x-3 group shrink-0">
-            <img src="assets/images/logo-chungmobile.jpg" alt="Chung Mobile" class="h-16 w-auto object-contain rounded-lg shadow-sm group-hover:scale-105 transition-transform duration-300">
-          </a>
+          <div class="flex items-center gap-2 md:gap-4">
+            <!-- Logo: Hidden on mobile, visible on desktop -->
+            <a routerLink="/" class="hidden md:flex items-center space-x-3 group shrink-0">
+              <img ngSrc="assets/images/logo-chungmobile.jpg" width="306" height="64" priority alt="Chung Mobile" class="h-16 w-auto object-contain rounded-lg shadow-sm group-hover:scale-105 transition-transform duration-300">
+            </a>
+            <!-- Mobile Title -->
+            <a routerLink="/" class="md:hidden font-bold text-lg text-gray-800">Chung Mobile</a>
+          </div>
 
           <!-- Search & Category -->
           <div class="hidden md:flex flex-1 max-w-2xl items-center gap-4">
@@ -42,7 +49,7 @@ import { ChatWidgetComponent } from './features/chat/chat-widget/chat-widget.com
                   @for (brand of brands; track brand) {
                     <a 
                       (click)="selectBrand(brand)"
-                      class="block px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-600 cursor-pointer transition-colors flex items-center justify-between group/item"
+                      class="px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-600 cursor-pointer transition-colors flex items-center justify-between group/item"
                     >
                       <span class="font-medium">{{ brand }}</span>
                       <svg class="w-4 h-4 opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,10 +153,10 @@ import { ChatWidgetComponent } from './features/chat/chat-widget/chat-widget.com
                   <div class="w-9 h-9 rounded-full overflow-hidden border border-gray-200 shadow-sm relative">
                     <div class="absolute inset-0 bg-gray-100 animate-pulse" *ngIf="!user.avatar && !user.name"></div>
                     @if (user.avatar) {
-                      <img [src]="getImageUrl(user.avatar)" alt="Avatar" class="w-full h-full object-cover">
+                      <img [ngSrc]="getImageUrl(user.avatar)" fill alt="Avatar" class="object-cover">
                     } @else {
                       <div class="w-full h-full bg-primary-100 flex items-center justify-center text-primary-600 font-bold">
-                        {{ user.name?.charAt(0)?.toUpperCase() }}
+                        {{ user.name.charAt(0).toUpperCase() }}
                       </div>
                     }
                   </div>
@@ -202,11 +209,107 @@ import { ChatWidgetComponent } from './features/chat/chat-widget/chat-widget.com
           </div>
         </div>
       </div>
+
+      <!-- Mobile Menu Overlay -->
+      @if (mobileMenuOpen) {
+        <div class="fixed inset-0 z-50 md:hidden">
+          <!-- Backdrop -->
+          <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" (click)="closeMobileMenu()"></div>
+          
+          <!-- Drawer -->
+          <div class="absolute inset-y-0 left-0 w-[80%] max-w-sm bg-white shadow-2xl transform transition-transform duration-300 flex flex-col">
+            <!-- Drawer Header -->
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+              <span class="font-bold text-lg text-gray-900">Menu</span>
+              <button (click)="closeMobileMenu()" class="p-2 hover:bg-gray-200 rounded-full transition-colors">
+                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+
+            <!-- Drawer Content -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-6">
+              <!-- Mobile Search -->
+              <div class="relative group">
+                <input 
+                  type="text" 
+                  [(ngModel)]="searchQuery"
+                  (keyup.enter)="search()"
+                  placeholder="Tìm kiếm sản phẩm..." 
+                  class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 bg-gray-50 focus:bg-white transition-all shadow-sm"
+                >
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+              </div>
+
+              <!-- User Info (if logged in) -->
+              @if (authService.currentUser$ | async; as user) {
+                <div class="bg-primary-50 p-4 rounded-xl border border-primary-100">
+                  <div class="flex items-center gap-3 mb-3">
+                    @if (user.avatar) {
+                       <img [src]="getImageUrl(user.avatar)" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm">
+                    } @else {
+                       <div class="w-12 h-12 rounded-full bg-white text-primary-600 flex items-center justify-center font-bold text-xl shadow-sm border border-primary-100">
+                         {{ user.name.charAt(0).toUpperCase() }}
+                       </div>
+                    }
+                    <div>
+                      <div class="font-bold text-gray-900">{{ user.name }}</div>
+                      <div class="text-xs text-primary-600 font-medium">{{ user.email }}</div>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2">
+                    <a routerLink="/profile" (click)="closeMobileMenu()" class="btn btn-sm bg-white text-gray-700 hover:text-primary-600 border border-gray-200">Hồ sơ</a>
+                    @if (user.role === 'admin') {
+                      <a routerLink="/admin" (click)="closeMobileMenu()" class="btn btn-sm bg-indigo-600 text-white hover:bg-indigo-700 border-none">Quản trị</a>
+                    }
+                    <button (click)="logout(); closeMobileMenu()" class="col-span-2 btn btn-sm bg-red-50 text-red-600 hover:bg-red-100 border-red-100 mt-1">Đăng xuất</button>
+                  </div>
+                </div>
+              } @else {
+                <div class="grid grid-cols-2 gap-3">
+                  <a routerLink="/auth/login" (click)="closeMobileMenu()" class="btn btn-secondary justify-center">Đăng nhập</a>
+                  <a routerLink="/auth/register" (click)="closeMobileMenu()" class="btn btn-primary justify-center">Đăng ký</a>
+                </div>
+              }
+
+              <!-- Menu Items -->
+              <div class="space-y-1">
+                <a routerLink="/" (click)="closeMobileMenu()" class="block px-4 py-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 hover:text-primary-600 transition-colors">
+                  🏠 Trang chủ
+                </a>
+                <a routerLink="/products" (click)="closeMobileMenu()" class="block px-4 py-3 rounded-xl hover:bg-gray-50 font-medium text-gray-700 hover:text-primary-600 transition-colors">
+                  📱 Tất cả điện thoại
+                </a>
+              </div>
+
+              <!-- Brands -->
+              <div>
+                <h3 class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Thương hiệu</h3>
+                <div class="space-y-1">
+                  @for (brand of brands; track brand) {
+                    <a 
+                      (click)="selectBrand(brand); closeMobileMenu()"
+                      class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-primary-600 cursor-pointer transition-colors"
+                    >
+                      <span>{{ brand }}</span>
+                      <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                  }
+                </div>
+              </div>
+            </div>
+            
+            <!-- Drawer Footer -->
+            <div class="p-4 border-t border-gray-100 bg-gray-50 text-center text-xs text-gray-400">
+              &copy; 2026 Chung Mobile App
+            </div>
+          </div>
+        </div>
+      }
     </header>
 
     <!-- Main Content -->
-    <main class="min-h-screen">
-      <router-outlet></router-outlet>
+    <main class="min-h-screen" [@fadeAnimation]="o.isActivated ? o.activatedRoute : ''">
+      <router-outlet #o="outlet"></router-outlet>
     </main>
     
     @if (authService.currentUser$ | async) {
@@ -218,7 +321,7 @@ import { ChatWidgetComponent } from './features/chat/chat-widget/chat-widget.com
       <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
           <div class="flex items-center space-x-3 mb-4">
-            <img src="assets/images/logo-chungmobile.jpg" alt="Chung Mobile" class="h-14 w-auto rounded border border-gray-700">
+            <img ngSrc="assets/images/logo-chungmobile.jpg" width="268" height="56" alt="Chung Mobile" class="h-14 w-auto rounded border border-gray-700">
           </div>
           <p class="text-gray-400">Cửa hàng điện thoại chính hãng với giá tốt nhất thị trường.</p>
         </div>
@@ -261,8 +364,24 @@ export class AppComponent implements OnInit {
   selectedBrand = '';
   searchQuery = '';
   brands: string[] = [];
-
   notifications: any[] = [];
+  mobileMenuOpen = false;
+
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+    if (this.mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  closeMobileMenu() {
+    this.mobileMenuOpen = false;
+    document.body.style.overflow = '';
+  }
+
+
 
   constructor(
     public authService: AuthService,

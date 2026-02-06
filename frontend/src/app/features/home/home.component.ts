@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductService } from '../../core/services/product.service';
 import { Product } from '../../core/models';
@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NgOptimizedImage],
   template: `
     <!-- Hero Slider -->
     <section class="relative bg-slate-900 text-white min-h-[600px] flex items-center overflow-hidden group">
@@ -29,7 +29,7 @@ import { environment } from '../../../environments/environment';
         >
           @if (slide.type === 'banner') {
              <div class="w-full h-full relative group">
-               <img [src]="slide.image" class="w-full h-full object-cover lg:object-fill" alt="Banner">
+               <img [ngSrc]="slide.image" fill priority class="object-cover lg:object-fill" alt="Banner">
                <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
              </div>
           } @else {
@@ -122,7 +122,7 @@ import { environment } from '../../../environments/environment';
             }
           </div>
         } @else {
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             @for (product of featuredProducts; track product._id) {
               <a [routerLink]="['/products', product._id]" class="card group h-full flex flex-col relative overflow-hidden">
                 <!-- Badge -->
@@ -137,9 +137,10 @@ import { environment } from '../../../environments/environment';
                 <!-- Image -->
                 <div class="aspect-[4/3] p-6 bg-gray-50 relative overflow-hidden group-hover:bg-primary-50/30 transition-colors duration-300">
                   <img 
-                    [src]="getImageUrl(product.thumbnail || product.images[0])" 
+                    [ngSrc]="getImageUrl(product.thumbnail || product.images[0])" 
+                    fill
                     [alt]="product.name"
-                    class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500 drop-shadow-sm group-hover:drop-shadow-xl"
+                    class="object-contain transform group-hover:scale-110 transition-transform duration-500 drop-shadow-sm group-hover:drop-shadow-xl"
                     (error)="onImageError($event)"
                   >
                   
@@ -150,7 +151,7 @@ import { environment } from '../../../environments/environment';
                 </div>
 
                 <!-- Content -->
-                <div class="p-6 flex flex-col flex-1">
+                <div class="p-3 md:p-6 flex flex-col flex-1">
                   <div class="mb-auto">
                     <p class="text-sm font-medium text-primary-600 mb-2">{{ product.brand }}</p>
                     <h3 class="font-bold text-slate-900 text-lg mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">{{ product.name }}</h3>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../../core/services/product.service';
@@ -11,9 +11,9 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, NgOptimizedImage],
   template: `
-    <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="max-w-7xl mx-auto px-4 py-4 md:py-12">
       @if (loading) {
         <div class="animate-pulse">
           <div class="grid lg:grid-cols-2 gap-12">
@@ -35,7 +35,7 @@ import { environment } from '../../../../environments/environment';
           <span class="text-slate-900 truncate max-w-[200px]">{{ product.name }}</span>
         </nav>
 
-        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 pb-24 md:pb-0">
           <!-- Images Column -->
           <div class="space-y-6">
             <div class="card p-4 bg-white rounded-3xl aspect-square flex items-center justify-center relative group overflow-hidden border border-slate-100 shadow-2xl shadow-slate-200/50">
@@ -48,9 +48,11 @@ import { environment } from '../../../../environments/environment';
                 ></video>
               } @else {
                 <img 
-                  [src]="getImageUrl(selectedImage || product.thumbnail || product.images[0])" 
+                  [ngSrc]="getImageUrl(selectedImage || product.thumbnail || product.images[0])" 
+                  fill
+                  priority
                   [alt]="product.name"
-                  class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500"
+                  class="object-contain transform group-hover:scale-110 transition-transform duration-500"
                   (error)="onImageError($event)"
                 >
                 <!-- Zoom hint -->
@@ -64,9 +66,9 @@ import { environment } from '../../../../environments/environment';
                   <button 
                     (click)="selectImage(image)"
                     [class]="selectedMediaType === 'image' && selectedImage === image ? 'ring-2 ring-primary-600 ring-offset-2 scale-95' : 'hover:scale-105'"
-                    class="card aspect-square p-2 rounded-xl bg-white border border-slate-100 transition-all duration-200 cursor-pointer overflow-hidden"
+                    class="card aspect-square p-2 rounded-xl bg-white border border-slate-100 transition-all duration-200 cursor-pointer overflow-hidden relative"
                   >
-                    <img [src]="getImageUrl(image)" [alt]="product.name" class="w-full h-full object-contain">
+                    <img [ngSrc]="getImageUrl(image)" fill [alt]="product.name" class="object-contain">
                   </button>
                 }
                 
@@ -175,7 +177,7 @@ import { environment } from '../../../../environments/environment';
               </div>
 
               <!-- Actions -->
-              <div class="flex flex-col sm:flex-row gap-4 pt-4">
+              <div class="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-200 shadow-lg md:static md:bg-transparent md:border-t-0 md:shadow-none md:p-0 z-40 flex flex-row gap-4">
                 <button 
                   (click)="addToCart()"
                   [disabled]="addingToCart || product.stock === 0"

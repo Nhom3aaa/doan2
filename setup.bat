@@ -16,20 +16,11 @@ echo [2/3] Dang khoi dong Docker (Web + Server + DB)...
 docker-compose up -d --build
 
 echo.
+echo [3/3] Dang nap du lieu san pham (Tu dong quet anh)...
+echo     - Vui long cho khoang 10-20 giay de server khoi dong...
+timeout /t 15 /nobreak >nul
 
-echo.
-echo [3/3] Dang nap du lieu...
-echo     - Ban co muon nap du lieu mau (Se XOA het du lieu cu)? (Y/N)
-set /p user_choice="Nhap lua chon (Mac dinh la N): "
-
-if /i "%user_choice%"=="Y" (
-    echo     - Vui long cho server khoi dong...
-    timeout /t 15 /nobreak >nul
-    docker-compose exec -T backend npm run seed
-) else (
-    echo     - Da BO QUA buoc nap du lieu mau.
-    echo     - Giu nguyen du lieu hien tai cua ban.
-)
+docker-compose exec -T backend npm run seed
 
 echo.
 echo ===================================================

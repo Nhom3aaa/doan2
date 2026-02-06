@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
 import { Cart, CartItem } from '../../core/models';
@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NgOptimizedImage],
   template: `
     <div class="max-w-4xl mx-auto px-4 py-8">
       <h1 class="text-2xl font-bold mb-6">Giỏ hàng</h1>
@@ -35,11 +35,12 @@ import { environment } from '../../../environments/environment';
         <div class="space-y-4">
           @for (item of cart.items; track item.product._id) {
             <div class="card p-4 flex gap-4">
-              <a [routerLink]="['/products', item.product._id]" class="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+              <a [routerLink]="['/products', item.product._id]" class="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative">
                 <img 
-                  [src]="getImageUrl(item.product.thumbnail || item.product.images[0])" 
+                  [ngSrc]="getImageUrl(item.product.thumbnail || item.product.images[0])" 
+                  fill
                   [alt]="item.product.name"
-                  class="w-full h-full object-contain p-2"
+                  class="object-contain p-2"
                   (error)="onImageError($event)"
                 >
               </a>
