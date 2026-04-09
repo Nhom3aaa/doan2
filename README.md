@@ -138,4 +138,7 @@ Hệ thống sẽ chạy tại:
 ## 🤝 Đóng góp
 
 Dự án được phát triển bởi nhóm 3. Mọi đóng góp xin gửi Pull Request hoặc tạo Issue.
+<<<<<<< HEAD
 "# doant4" 
+=======
+>>>>>>> 1787c55d33fd3cee5718b869a09e90d0f29257b4
