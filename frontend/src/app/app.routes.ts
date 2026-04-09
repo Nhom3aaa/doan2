@@ -1,0 +1,112 @@
+import { Routes } from '@angular/router';
+import { AuthGuard, AdminGuard, GuestGuard } from './core/guards/auth.guard';
+import { ShipperGuard } from './core/guards/shipper.guard';
+
+export const routes: Routes = [
+  {
+    path: '',
+    loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent)
+  },
+  {
+    path: 'products',
+    loadComponent: () => import('./features/products/product-list/product-list.component').then(m => m.ProductListComponent)
+  },
+  {
+    path: 'products/:id',
+    loadComponent: () => import('./features/products/product-detail/product-detail.component').then(m => m.ProductDetailComponent)
+  },
+  {
+    path: 'auth',
+    canActivate: [GuestGuard],
+    children: [
+      {
+        path: 'login',
+        loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent)
+      },
+      {
+        path: 'register',
+        loadComponent: () => import('./features/auth/register/register.component').then(m => m.RegisterComponent)
+      },
+      {
+        path: 'callback',
+        loadComponent: () => import('./features/auth/auth-callback/auth-callback.component').then(m => m.AuthCallbackComponent)
+      }
+    ]
+  },
+  {
+    path: 'cart',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./features/cart/cart.component').then(m => m.CartComponent)
+  },
+  {
+    path: 'checkout',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./features/checkout/checkout.component').then(m => m.CheckoutComponent)
+  },
+  {
+    path: 'orders',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./features/orders/order-list/order-list.component').then(m => m.OrderListComponent)
+  },
+  {
+    path: 'orders/:id',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./features/orders/order-detail/order-detail.component').then(m => m.OrderDetailComponent)
+  },
+  {
+    path: 'profile',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent)
+  },
+  {
+    path: 'chat',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./features/chat/chat.component').then(m => m.ChatComponent)
+  },
+  {
+    path: 'admin',
+    canActivate: [AdminGuard],
+    loadComponent: () => import('./features/admin/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/admin/dashboard/dashboard.component').then(m => m.DashboardComponent)
+      },
+      {
+        path: 'products',
+        loadComponent: () => import('./features/admin/admin-products/admin-products.component').then(m => m.AdminProductsComponent)
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./features/admin/admin-orders/admin-orders.component').then(m => m.AdminOrdersComponent)
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./features/admin/admin-users/admin-users.component').then(m => m.AdminUsersComponent)
+      },
+      {
+        path: 'chat',
+        loadComponent: () => import('./features/admin/admin-chat/admin-chat.component').then(m => m.AdminChatComponent)
+      }
+    ]
+  },
+  {
+    path: 'shipper',
+    canActivate: [ShipperGuard],
+    loadComponent: () => import('./features/shipper/shipper-layout/shipper-layout.component').then(m => m.ShipperLayoutComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/shipper/shipper-dashboard/shipper-dashboard.component').then(m => m.ShipperDashboardComponent)
+      },
+      {
+        path: 'orders/:id',
+        loadComponent: () => import('./features/shipper/shipper-order-detail/shipper-order-detail.component').then(m => m.ShipperOrderDetailComponent)
+      }
+    ]
+  },
+  {
+    path: '**',
+    redirectTo: ''
+  }
+];
