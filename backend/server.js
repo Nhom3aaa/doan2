@@ -26,11 +26,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: function(origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl)
-      if (!origin) return callback(null, true);
-      // Allow all localhost ports
-      if (origin.startsWith('http://localhost:')) return callback(null, true);
-      callback(new Error('Not allowed by CORS'));
+      // Allow all origins for debugging and production
+      return callback(null, true);
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
